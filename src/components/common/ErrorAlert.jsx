@@ -5,19 +5,26 @@ const ErrorAlert = ({ error, onDismiss, className = '' }) => {
   if (!error) return null;
 
   return (
-    <div className={`bg-red-50 border border-red-200 rounded-lg p-4 ${className}`}>
+    <div
+      className={`rounded-lg border border-[#E5E9E6] bg-[#F6F8F6] p-4 ${className}`}
+      role="alert"
+    >
       <div className="flex items-start">
-        <div className="flex-shrink-0">
-          <FaExclamationCircle className="text-red-600 h-5 w-5" />
+        <div className="shrink-0">
+          <FaExclamationCircle className="h-5 w-5 text-[#6B9080]" />
         </div>
-        <div className="ml-3 flex-1">
-          <h3 className="text-sm font-medium text-red-800">
-            {typeof error === 'string' ? error : error.message || 'An error occurred'}
+
+        <div className="ml-3 min-w-0 flex-1">
+          <h3 className="text-sm font-medium text-[#2F3E46]">
+            {typeof error === 'string'
+              ? error
+              : error.message || 'An error occurred'}
           </h3>
+
           {typeof error === 'object' && error.details && (
-            <div className="mt-1 text-sm text-red-700">
+            <div className="mt-1 text-sm text-[#5B6B65]">
               {Array.isArray(error.details) ? (
-                <ul className="list-disc list-inside">
+                <ul className="list-inside list-disc space-y-1">
                   {error.details.map((detail, index) => (
                     <li key={index}>{detail}</li>
                   ))}
@@ -28,10 +35,13 @@ const ErrorAlert = ({ error, onDismiss, className = '' }) => {
             </div>
           )}
         </div>
+
         {onDismiss && (
           <button
+            type="button"
             onClick={onDismiss}
-            className="flex-shrink-0 ml-4 text-red-600 hover:text-red-800 transition-colors"
+            aria-label="Dismiss alert"
+            className="ml-4 shrink-0 rounded p-1 text-[#5B6B65] transition-colors hover:bg-[#E3EDE8] hover:text-[#2F3E46] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#6B9080]"
           >
             <FaTimes size={16} />
           </button>

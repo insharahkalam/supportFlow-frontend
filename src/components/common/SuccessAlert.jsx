@@ -5,20 +5,29 @@ const SuccessAlert = ({ message, onDismiss, className = '' }) => {
     if (!message) return null;
 
     return (
-        <div className={`bg-green-50 border border-green-200 rounded-lg p-4 ${className}`}>
+        <div
+            className={`rounded-lg border border-[#E5E9E6] bg-[#E3EDE8] p-4 ${className}`}
+            role="status"
+        >
             <div className="flex items-start">
-                <div className="flex-shrink-0">
-                    <FaCheckCircle className="text-green-600 h-5 w-5" />
+                <div className="shrink-0">
+                    <FaCheckCircle className="h-5 w-5 text-[#6B9080]" />
                 </div>
-                <div className="ml-3 flex-1">
-                    <p className="text-sm text-green-800">
-                        {typeof message === 'string' ? message : message.message || 'Success!'}
+
+                <div className="ml-3 min-w-0 flex-1">
+                    <p className="text-sm text-[#2F3E46]">
+                        {typeof message === 'string'
+                            ? message
+                            : message.message || 'Success!'}
                     </p>
                 </div>
+
                 {onDismiss && (
                     <button
+                        type="button"
                         onClick={onDismiss}
-                        className="flex-shrink-0 ml-4 text-green-600 hover:text-green-800 transition-colors"
+                        aria-label="Dismiss alert"
+                        className="ml-4 shrink-0 rounded p-1 text-[#5B6B65] transition-colors hover:bg-white/70 hover:text-[#2F3E46] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#6B9080]"
                     >
                         <FaTimes size={16} />
                     </button>

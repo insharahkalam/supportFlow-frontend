@@ -31,131 +31,186 @@ const AISuggestions = ({ suggestion, onApply, onDismiss, onEdit }) => {
     };
 
     const getConfidenceColor = (confidence) => {
-        if (confidence >= 0.8) return 'text-green-600';
-        if (confidence >= 0.6) return 'text-yellow-600';
-        return 'text-red-600';
+        if (confidence >= 0.8) return 'bg-[#E6F2EA] text-[#2F7A4F] ring-[#CBE5D4]';
+        if (confidence >= 0.6) return 'bg-[#FBF3E4] text-[#9A6B1F] ring-[#F1E2C4]';
+        return 'bg-[#FBEAEA] text-[#A94442] ring-[#F3D4D4]';
     };
 
+    const getConfidenceBarColor = (confidence) => {
+        if (confidence >= 0.8) return 'bg-[#2F7A4F]';
+        if (confidence >= 0.6) return 'bg-[#C28B33]';
+        return 'bg-[#A94442]';
+    };
+
+    const getPriorityColor = (priority) =>
+        priority === 'High'
+            ? 'bg-[#FBEAEA] text-[#A94442] ring-[#F3D4D4]'
+            : priority === 'Medium'
+                ? 'bg-[#FBF3E4] text-[#9A6B1F] ring-[#F1E2C4]'
+                : 'bg-[#E3EDE8] text-[#4F7566] ring-[#CFE0D7]';
+
+    const badgeBase =
+        'inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium ring-1 ring-inset whitespace-nowrap';
+
+    const fieldClass =
+        'mt-1.5 w-full rounded-lg border border-[#E5E9E6] bg-white px-3 py-2 text-sm text-[#2F3E46] shadow-[0_1px_2px_rgba(47,62,70,0.04)] transition-colors placeholder:text-[#9AA8A2] hover:border-[#C9D6CF] focus:border-[#6B9080] focus:outline-none focus:ring-4 focus:ring-[#6B9080]/15';
+
+    const labelClass = 'text-xs font-semibold uppercase tracking-wider text-[#5B6B65]';
+
     return (
-        <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-lg p-4 shadow-sm">
-            <div className="flex items-start justify-between mb-3">
-                <div className="flex items-center gap-2">
-                    <FaRobot className="text-blue-600 text-xl" />
-                    <h3 className="font-semibold text-blue-900">AI Analysis</h3>
-                    {suggestion.confidence && (
-                        <span className={`text-xs font-medium ${getConfidenceColor(suggestion.confidence)} ml-2`}>
-                            Confidence: {Math.round(suggestion.confidence * 100)}%
-                        </span>
-                    )}
+        <div className="overflow-hidden rounded-2xl border border-[#E5E9E6] bg-white shadow-[0_1px_2px_rgba(47,62,70,0.04)]">
+            {/* Header */}
+            <div className="flex items-start justify-between gap-3 border-b border-[#E5E9E6] bg-[#F6F8F6] px-4 py-3.5 sm:px-5">
+                <div className="flex min-w-0 items-center gap-3">
+                    <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[#E3EDE8] text-[#6B9080]">
+                        <FaRobot className="text-base" />
+                    </div>
+                    <div className="min-w-0">
+                        <h3 className="text-sm font-semibold text-[#2F3E46]">AI Analysis</h3>
+                        <p className="text-xs text-[#5B6B65]">
+                            {isEditing ? 'Review and adjust the suggestions' : 'Suggested by SupportFlow AI'}
+                        </p>
+                    </div>
                 </div>
-                <div className="flex gap-2">
+
+                <div className="flex shrink-0 items-center gap-1">
                     {!isEditing && (
                         <button
                             onClick={handleEdit}
-                            className="text-blue-600 hover:text-blue-800 p-1 rounded hover:bg-blue-100 transition-colors"
+                            className="inline-flex h-8 w-8 items-center justify-center rounded-lg text-[#6B9080] transition-colors hover:bg-[#E3EDE8] hover:text-[#5A7D6E] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#6B9080]"
                             title="Edit suggestions"
+                            aria-label="Edit suggestions"
                         >
                             <FaEdit size={14} />
                         </button>
                     )}
                     <button
                         onClick={onDismiss}
-                        className="text-gray-500 hover:text-gray-700 p-1 rounded hover:bg-gray-100 transition-colors"
+                        className="inline-flex h-8 w-8 items-center justify-center rounded-lg text-[#8A9993] transition-colors hover:bg-[#EEF1EF] hover:text-[#2F3E46] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#6B9080]"
                         title="Dismiss suggestions"
+                        aria-label="Dismiss suggestions"
                     >
                         <FaTimes size={14} />
                     </button>
                 </div>
             </div>
 
-            {isEditing ? (
-                <div className="space-y-3">
-                    <div>
-                        <label className="text-sm font-medium text-gray-700">Category</label>
-                        <select
-                            value={editedSuggestion.category}
-                            onChange={(e) => setEditedSuggestion({ ...editedSuggestion, category: e.target.value })}
-                            className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        >
-                            <option value="Technical">Technical</option>
-                            <option value="Billing">Billing</option>
-                            <option value="Account">Account</option>
-                            <option value="Product">Product</option>
-                            <option value="Other">Other</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label className="text-sm font-medium text-gray-700">Priority</label>
-                        <select
-                            value={editedSuggestion.priority}
-                            onChange={(e) => setEditedSuggestion({ ...editedSuggestion, priority: e.target.value })}
-                            className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        >
-                            <option value="Low">Low</option>
-                            <option value="Medium">Medium</option>
-                            <option value="High">High</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label className="text-sm font-medium text-gray-700">Summary</label>
-                        <textarea
-                            value={editedSuggestion.summary}
-                            onChange={(e) => setEditedSuggestion({ ...editedSuggestion, summary: e.target.value })}
-                            rows="2"
-                            className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        />
-                    </div>
-                    <div className="flex gap-2">
-                        <button
-                            onClick={handleSaveEdit}
-                            className="px-3 py-1 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors text-sm"
-                        >
-                            Save Changes
-                        </button>
-                        <button
-                            onClick={handleCancelEdit}
-                            className="px-3 py-1 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 transition-colors text-sm"
-                        >
-                            Cancel
-                        </button>
-                    </div>
-                </div>
-            ) : (
-                <>
-                    <div className="space-y-2 text-sm">
-                        <div className="flex items-center gap-2">
-                            <span className="font-medium text-gray-700 w-20">Category:</span>
-                            <span className="px-2 py-0.5 bg-blue-100 text-blue-800 rounded-full text-xs">
-                                {suggestion.category}
-                            </span>
-                        </div>
-                        <div className="flex items-center gap-2">
-                            <span className="font-medium text-gray-700 w-20">Priority:</span>
-                            <span className={`px-2 py-0.5 rounded-full text-xs ${suggestion.priority === 'High'
-                                    ? 'bg-red-100 text-red-800'
-                                    : suggestion.priority === 'Medium'
-                                        ? 'bg-yellow-100 text-yellow-800'
-                                        : 'bg-green-100 text-green-800'
-                                }`}>
-                                {suggestion.priority}
-                            </span>
-                        </div>
-                        <div className="flex gap-2">
-                            <span className="font-medium text-gray-700 w-20">Summary:</span>
-                            <span className="text-gray-700 flex-1">{suggestion.summary}</span>
+            <div className="px-4 py-4 sm:px-5">
+                {/* Confidence */}
+                {suggestion.confidence && (
+                    <div className="mb-4 flex items-center gap-3">
+                        <span className={`${badgeBase} ${getConfidenceColor(suggestion.confidence)}`}>
+                            Confidence: {Math.round(suggestion.confidence * 100)}%
+                        </span>
+                        <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-[#EEF1EF]">
+                            <div
+                                className={`h-full rounded-full ${getConfidenceBarColor(suggestion.confidence)}`}
+                                style={{ width: `${Math.min(Math.round(suggestion.confidence * 100), 100)}%` }}
+                            />
                         </div>
                     </div>
-                    <div className="mt-3 flex gap-3">
-                        <button
-                            onClick={handleApply}
-                            className="flex items-center gap-1 px-3 py-1.5 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors text-sm"
-                        >
-                            <FaCheck size={12} />
-                            Apply Suggestions
-                        </button>
+                )}
+
+                {isEditing ? (
+                    <div className="space-y-4">
+                        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                            <div>
+                                <label className={labelClass}>Category</label>
+                                <select
+                                    value={editedSuggestion.category}
+                                    onChange={(e) => setEditedSuggestion({ ...editedSuggestion, category: e.target.value })}
+                                    className={fieldClass}
+                                >
+                                    <option value="Technical">Technical</option>
+                                    <option value="Billing">Billing</option>
+                                    <option value="Account">Account</option>
+                                    <option value="Product">Product</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label className={labelClass}>Priority</label>
+                                <select
+                                    value={editedSuggestion.priority}
+                                    onChange={(e) => setEditedSuggestion({ ...editedSuggestion, priority: e.target.value })}
+                                    className={fieldClass}
+                                >
+                                    <option value="Low">Low</option>
+                                    <option value="Medium">Medium</option>
+                                    <option value="High">High</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div>
+                            <label className={labelClass}>Summary</label>
+                            <textarea
+                                value={editedSuggestion.summary}
+                                onChange={(e) => setEditedSuggestion({ ...editedSuggestion, summary: e.target.value })}
+                                rows="3"
+                                className={`${fieldClass} resize-y leading-relaxed`}
+                            />
+                        </div>
+                        <div className="flex flex-col-reverse gap-2 border-t border-[#E5E9E6] pt-4 sm:flex-row sm:justify-end">
+                            <button
+                                onClick={handleCancelEdit}
+                                className="inline-flex items-center justify-center rounded-lg border border-[#E5E9E6] bg-white px-4 py-2 text-sm font-medium text-[#5B6B65] transition-colors hover:bg-[#F6F8F6] hover:text-[#2F3E46] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#6B9080] focus-visible:ring-offset-2"
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                onClick={handleSaveEdit}
+                                className="inline-flex items-center justify-center gap-2 rounded-lg bg-[#6B9080] px-4 py-2 text-sm font-medium text-white shadow-[0_1px_2px_rgba(47,62,70,0.12)] transition-colors hover:bg-[#5A7D6E] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#6B9080] focus-visible:ring-offset-2"
+                            >
+                                <FaCheck size={12} />
+                                Save Changes
+                            </button>
+                        </div>
                     </div>
-                </>
-            )}
+                ) : (
+                    <>
+                        <dl className="space-y-3 text-sm">
+                            <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:gap-3">
+                                <dt className="w-24 shrink-0 text-xs font-semibold uppercase tracking-wider text-[#5B6B65]">
+                                    Category
+                                </dt>
+                                <dd>
+                                    <span className={`${badgeBase} bg-[#EAF1F6] text-[#3E6A85] ring-[#D3E2EC]`}>
+                                        {suggestion.category}
+                                    </span>
+                                </dd>
+                            </div>
+                            <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:gap-3">
+                                <dt className="w-24 shrink-0 text-xs font-semibold uppercase tracking-wider text-[#5B6B65]">
+                                    Priority
+                                </dt>
+                                <dd>
+                                    <span className={`${badgeBase} ${getPriorityColor(suggestion.priority)}`}>
+                                        <span className="h-1.5 w-1.5 rounded-full bg-current opacity-70" />
+                                        {suggestion.priority}
+                                    </span>
+                                </dd>
+                            </div>
+                            <div className="flex flex-col gap-1 sm:flex-row sm:gap-3">
+                                <dt className="w-24 shrink-0 pt-0.5 text-xs font-semibold uppercase tracking-wider text-[#5B6B65]">
+                                    Summary
+                                </dt>
+                                <dd className="flex-1 rounded-lg bg-[#F6F8F6] px-3 py-2.5 leading-relaxed text-[#2F3E46]">
+                                    {suggestion.summary}
+                                </dd>
+                            </div>
+                        </dl>
+                        <div className="mt-4 flex flex-col gap-2 border-t border-[#E5E9E6] pt-4 sm:flex-row sm:justify-end">
+                            <button
+                                onClick={handleApply}
+                                className="inline-flex items-center justify-center gap-2 rounded-lg bg-[#6B9080] px-4 py-2 text-sm font-medium text-white shadow-[0_1px_2px_rgba(47,62,70,0.12)] transition-colors hover:bg-[#5A7D6E] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#6B9080] focus-visible:ring-offset-2"
+                            >
+                                <FaCheck size={12} />
+                                Apply Suggestions
+                            </button>
+                        </div>
+                    </>
+                )}
+            </div>
         </div>
     );
 };
