@@ -182,10 +182,15 @@ const CreateTicket = () => {
                                     className={fieldClass}
                                 >
                                     <option value="">Select a category</option>
-                                    <option value="Technical">Technical</option>
-                                    <option value="Billing">Billing</option>
-                                    <option value="Account">Account</option>
-                                    <option value="Product">Product</option>
+                                    <option value="Technical Support">Technical Support</option>
+                                    <option value="Account & Login">Account & Login</option>
+                                    <option value="Billing & Payments">Billing & Payments</option>
+                                    <option value="Refund & Returns">Refund & Returns</option>
+                                    <option value="Order & Delivery">Order & Delivery</option>
+                                    <option value="Product Issues">Product Issues</option>
+                                    <option value="General Inquiry">General Inquiry</option>
+                                    <option value="Feature Request">Feature Request</option>
+                                    <option value="Feedback & Suggestions">Feedback & Suggestions</option>
                                     <option value="Other">Other</option>
                                 </select>
                             </div>
